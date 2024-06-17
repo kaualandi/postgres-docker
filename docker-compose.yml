@@ -4,7 +4,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin
-      POSTGRES_DB: pdv
+      POSTGRES_DB: postgres
     ports:
       - "5432:5432"
     volumes:
@@ -14,7 +14,7 @@ services:
     build:
       context: ./backend
     environment:
-      DATABASE_URL: postgres://postgres:admin@postgres:5432/pdv
+      DATABASE_URL: postgres://postgres:admin@postgres:5432/postgres
     depends_on:
       - postgres
     volumes:

@@ -7,8 +7,70 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model User {
-  id    Int    @id @default(autoincrement())
-  name  String
-  email String @unique
+enum ResultType {
+  TEXT
+  TABLE
+}
+
+model history {
+  id         Int        @id @default(autoincrement())
+  query      String
+  result     String
+  resultType ResultType
+  isCritical Boolean    @default(false)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @default(now()) @updatedAt
+}
+
+model category {
+  id        Int       @id @default(autoincrement())
+  name      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+  Product   product[]
+}
+
+model product {
+  id            Int         @id @default(autoincrement())
+  name          String
+  price         Float
+  stockQuantity Int
+  categoryId    Int
+  category      category    @relation(fields: [categoryId], references: [id])
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @default(now()) @updatedAt
+  SaleItem      sale_item[]
+}
+
+model client {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String?
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  Sale      sale[]
+}
+
+model sale {
+  id        Int         @id @default(autoincrement())
+  clientId  Int
+  client    client      @relation(fields: [clientId], references: [id])
+  saleDate  DateTime
+  total     Float
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @default(now()) @updatedAt
+  SaleItem  sale_item[]
+}
+
+model sale_item {
+  id        Int      @id @default(autoincrement())
+  saleId    Int
+  sale      sale     @relation(fields: [saleId], references: [id])
+  productId Int
+  product   product  @relation(fields: [productId], references: [id])
+  quantity  Int
+  unitPrice Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
