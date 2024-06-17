@@ -13,6 +13,7 @@ import {
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { HistoryService } from '../history/history.service';
 import { ResultType } from '@prisma/client';
+import { TableName, columnName } from '../querys';
 
 @Injectable()
 export class QuerysService {
@@ -20,6 +21,27 @@ export class QuerysService {
     private readonly prismaService: PrismaService,
     private readonly historyService: HistoryService,
   ) {}
+
+  async getConfig() {
+    const allTables: TableName[] = await this.prismaService.$queryRawUnsafe(
+      "SELECT table_name FROM information_schema.tables WHERE table_schema='public'",
+    );
+    const first = allTables.shift();
+
+    const allColumns: columnName[] = await this.prismaService.$queryRawUnsafe(
+      "SELECT table_name, column_name FROM information_schema.columns WHERE table_schema='public'",
+    );
+
+    const publicColumns = allColumns.filter(
+      (column) => column.table_name !== first.table_name,
+    );
+    const columns = publicColumns.map((column) => column.column_name);
+
+    return {
+      tables: allTables.map((table) => table.table_name),
+      columns: [...new Set(columns)],
+    };
+  }
 
   async execute(body: ExecuteDto) {
     const command = body.query.trim().split(/\s+/)[0].toUpperCase();
@@ -57,11 +79,11 @@ export class QuerysService {
     };
   }
 
-  executeRaw(sql: string) {
+  private executeRaw(sql: string) {
     return this.prismaService.$executeRawUnsafe(sql);
   }
 
-  queryRaw(sql: string) {
+  private queryRaw(sql: string) {
     return this.prismaService.$queryRawUnsafe(sql);
   }
 
@@ -72,7 +94,7 @@ export class QuerysService {
     return true;
   }
 
-  confirmPassword(auth: string) {
+  private confirmPassword(auth: string) {
     if (!process.env.ROOT_PASSWORD) {
       throw new BadRequestException(WITHOUT_ROOT_PASS_BACKEND);
     }
@@ -89,7 +111,7 @@ export class QuerysService {
     return grant;
   }
 
-  toSHA1(input: string) {
+  private toSHA1(input: string) {
     const hash = createHash('sha1');
     hash.update(input);
     return hash.digest('hex');

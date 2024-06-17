@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req } from '@nestjs/common';
 import { QuerysService } from './querys.service';
 import { ExecuteDto } from './dto/execute-dto';
 import { Request } from 'express';
@@ -12,5 +12,10 @@ export class QuerysController {
     const auth = req.headers.authorization;
     this.querysService.validCommandSecurity(body.query, auth);
     return this.querysService.execute(body);
+  }
+
+  @Get('config')
+  async getConfig() {
+    return this.querysService.getConfig();
   }
 }
