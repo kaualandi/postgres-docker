@@ -1,0 +1,15 @@
+# Dockerfile for Prisma
+FROM node:18-slim
+
+# Instalar OpenSSL
+RUN apt-get update && apt-get install -y openssl
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+ENTRYPOINT ["npx", "prisma"]
