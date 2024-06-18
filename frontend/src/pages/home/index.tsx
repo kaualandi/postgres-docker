@@ -1,13 +1,40 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
-import { Button, Chip, ScrollShadow, Textarea } from '@nextui-org/react';
+import {
+  Button,
+  Chip,
+  ScrollShadow,
+  Textarea,
+  useDisclosure,
+} from '@nextui-org/react';
+import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
+import { BiKey } from 'react-icons/bi';
 import PlayIcon from '../../assets/icons/play';
 import ResetIcon from '../../assets/icons/reset';
+import History from '../../components/history';
+import ModalComponent from '../../components/modal';
 import TableComponent from '../../components/table';
 import * as S from './styles';
 
 export default function Home() {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  const [history, setHistory] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    axios
+      .get('http://localhost:3001/history')
+      .then((response) => {
+        setHistory(response.data);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  }, []);
+
   const [sql, setSql] = useState('');
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -27,7 +54,7 @@ export default function Home() {
       'BACKUP ',
       'RESTORE ',
     ],
-    ['* ', 'COUNT(', 'SUM(', 'AVG(', 'MIN(', 'MAX('],
+    ['* '],
     ['FROM ', 'INTO ', 'TABLE ', 'DATABASE ', 'INDEX ', 'VIEW ', 'TRIGGER '],
     ['WHERE ', 'SET ', 'VALUES ', 'ADD ', 'MODIFY ', 'CHANGE ', 'RENAME '],
     [
@@ -78,47 +105,55 @@ export default function Home() {
 
   return (
     <S.Container>
-      <Textarea
-        label='Query SQL'
-        labelPlacement='outside'
-        placeholder='Digite sua query aqui...'
-        minRows={5}
-        ref={inputRef}
-        value={sql}
-        onValueChange={setSql}
-      />
-      <ScrollShadow
-        orientation='horizontal'
-        style={{
-          display: 'flex',
-          flexWrap: 'nowrap',
-          maxWidth: '100%',
-          paddingBottom: '10px',
-        }}
-      >
-        {autoCompleteSQLFiltered?.map((item, index) => (
-          <Chip
-            as={Button}
-            key={index}
-            onPress={() => handleAutoComplete(item)}
-            className='chip'
-          >
-            {item}
-          </Chip>
-        ))}
-      </ScrollShadow>
+      <div className='content'>
+        <Textarea
+          label='Query SQL'
+          labelPlacement='outside'
+          placeholder='Digite sua query aqui...'
+          minRows={5}
+          ref={inputRef}
+          value={sql}
+          onValueChange={setSql}
+        />
+        <ScrollShadow
+          orientation='horizontal'
+          style={{
+            display: 'flex',
+            flexWrap: 'nowrap',
+            maxWidth: '100%',
+            paddingBottom: '10px',
+          }}
+        >
+          {autoCompleteSQLFiltered?.map((item, index) => (
+            <Chip
+              as={Button}
+              key={index}
+              onPress={() => handleAutoComplete(item)}
+              className='chip'
+            >
+              {item}
+            </Chip>
+          ))}
+        </ScrollShadow>
 
-      <div className='buttons'>
-        <Button variant='flat' color='danger' onPress={reset}>
-          <ResetIcon />
-          Reset
-        </Button>
-        <Button variant='flat' color='success'>
-          <PlayIcon />
-          Run
-        </Button>
+        <div className='buttons'>
+          <Button variant='flat' color='primary' isIconOnly onPress={onOpen}>
+            <BiKey size={22} />
+          </Button>
+          <Button variant='flat' color='danger' onPress={reset}>
+            <ResetIcon />
+            Reset
+          </Button>
+          <Button variant='flat' color='success'>
+            <PlayIcon />
+            Run
+          </Button>
+        </div>
+        <TableComponent />
+
+        <ModalComponent isOpen={isOpen} onOpenChange={onOpenChange} />
       </div>
-      <TableComponent />
+      <History loading={isLoading} data={history} />
     </S.Container>
   );
 }
