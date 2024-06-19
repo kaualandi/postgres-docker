@@ -12,7 +12,7 @@ enum ResultType {
   TABLE
 }
 
-model history {
+model log {
   id         Int        @id @default(autoincrement())
   query      String
   result     String
