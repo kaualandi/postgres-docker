@@ -7,7 +7,7 @@ export class HistoryService {
   constructor(private readonly prismaService: PrismaService) {}
 
   create(createHistoryDto: CreateHistoryDto) {
-    return this.prismaService.history.create({
+    return this.prismaService.log.create({
       data: {
         ...createHistoryDto,
       },
@@ -15,7 +15,7 @@ export class HistoryService {
   }
 
   findAll() {
-    return this.prismaService.history.findMany();
+    return this.prismaService.log.findMany();
   }
 
   findOne(id: number) {
