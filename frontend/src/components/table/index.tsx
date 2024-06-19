@@ -6,43 +6,31 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
-} from "@nextui-org/react";
-import { useState } from "react";
-import { BiTrash } from "react-icons/bi";
-import * as S from "./styles";
+} from '@nextui-org/react';
+import { useEffect, useState } from 'react';
+import { BiTrash } from 'react-icons/bi';
+import * as S from './styles';
 
-export default function TableComponent() {
+export default function TableComponent({
+  data,
+}: {
+  data: { id: string; query: string }[];
+}) {
   const columns = [
-    {
-      key: "name",
-      label: "NAME",
-    },
-    {
-      key: "actions",
-      label: "ACTIONS",
-    },
+    { key: 'id', label: 'ID' },
+    { key: 'query', label: 'QUERY' },
+    { key: 'actions', label: 'ACTIONS' },
   ];
 
-  const [rows, setRows] = useState([
-    {
-      id: "1",
-      name: "Tony Reichert",
-    },
-    {
-      id: "2",
-      name: "Zoey Lang",
-    },
-    {
-      id: "3",
-      name: "Jane Fisher",
-    },
-    {
-      id: "4",
-      name: "William Howard",
-    },
-  ]);
+  const [rows, setRows] = useState(
+    data.map((item) => ({ id: item.id, query: item.query }))
+  );
 
   const [selectedKeys, setSelectedKeys] = useState(new Set([]));
+
+  useEffect(() => {
+    setRows(data.map((item) => ({ id: item.id, query: item.query })));
+  }, [data]);
 
   function remove(id: string) {
     setRows((rest) => rest.filter((row) => row.id !== id));
@@ -55,15 +43,15 @@ export default function TableComponent() {
 
   return (
     <S.Container>
-      <div className="header">
+      <div className='header'>
         <h2>Resultados</h2>
 
         {selectedKeys.size != 0 && rows.length > 0 && (
           <Button
-            variant="flat"
-            color="danger"
-            size="sm"
-            style={{ marginLeft: "20px" }}
+            variant='flat'
+            color='danger'
+            size='sm'
+            style={{ marginLeft: '20px' }}
             onPress={removeAll}
           >
             Excluir
@@ -74,14 +62,14 @@ export default function TableComponent() {
         )}
       </div>
       <S.Tabela
-        aria-label={"Table"}
-        selectionMode="multiple"
+        aria-label={'Table'}
+        selectionMode='multiple'
         selectedKeys={selectedKeys}
         onSelectionChange={setSelectedKeys}
       >
         <TableHeader columns={columns}>
           {(column) =>
-            column.key != "actions" ? (
+            column.key != 'actions' ? (
               <TableColumn key={column.key}>{column.label}</TableColumn>
             ) : (
               <TableColumn key={column.key}>{column.label}</TableColumn>
@@ -92,17 +80,17 @@ export default function TableComponent() {
           {(item) => (
             <TableRow key={item.id}>
               {(columnKey) =>
-                columnKey != "actions" ? (
+                columnKey != 'actions' ? (
                   <TableCell>{getKeyValue(item, columnKey)}</TableCell>
                 ) : (
                   <TableCell>
                     <Button
-                      size="sm"
-                      color="danger"
-                      variant="flat"
+                      size='sm'
+                      color='danger'
+                      variant='flat'
                       onPress={() => remove(item.id)}
                     >
-                      <BiTrash size={18} color="#f54180" />
+                      <BiTrash size={18} color='#f54180' />
                     </Button>
                   </TableCell>
                 )
