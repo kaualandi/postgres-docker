@@ -1,6 +1,8 @@
 import { styled } from '../../../stitches.config';
 
 export const Container = styled('div', {
+  maxHeight: '100vh',
+  overflowY: 'auto',
   padding: '30px',
   display: 'grid',
   gridTemplateColumns: '2fr 1fr',

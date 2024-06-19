@@ -1,5 +1,4 @@
-import { CardBody, CardHeader, Divider, Spinner } from '@nextui-org/react';
-import { useEffect } from 'react';
+import { CardHeader, Divider, Spinner } from '@nextui-org/react';
 import * as S from './styles';
 
 interface HistoryProps {
@@ -21,31 +20,27 @@ export default function History({ loading, data }: HistoryProps) {
     return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
   }
 
-  useEffect(() => {
-    console.log('data', data);
-  }, [data]);
-
   return (
     <S.Container>
       <CardHeader>
         <h1>Histórico</h1>
       </CardHeader>
       <Divider />
-      <CardBody>
+      <S.Body>
         {!loading ? (
           data?.map((item) => (
-            <>
-              <div className='item' key={item.id}>
+            <div key={item.id}>
+              <S.Item>
                 <h2>{item.query}</h2>
                 <p>Executado em {getFormattedDate(item.createdAt)}</p>
-              </div>
+              </S.Item>
               <Divider />
-            </>
+            </div>
           ))
         ) : (
           <Spinner />
         )}
-      </CardBody>
+      </S.Body>
     </S.Container>
   );
 }

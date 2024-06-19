@@ -20,10 +20,12 @@ import * as S from './styles';
 export default function Home() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
+  const [tableData, setTableData] = useState([]);
+
   const [history, setHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
+  function getHistory() {
     axios
       .get('http://localhost:3001/history')
       .then((response) => {
@@ -33,6 +35,10 @@ export default function Home() {
       .catch((error) => {
         console.error('Error:', error);
       });
+  }
+
+  useEffect(() => {
+    getHistory();
   }, []);
 
   const [sql, setSql] = useState('');
@@ -74,6 +80,25 @@ export default function Home() {
   const [autoCompleteSQLFiltered, setAutoCompleteSQLFiltered] = useState<
     string[]
   >([]);
+
+  function execute() {
+    axios
+      .post(
+        'http://localhost:3001/querys/execute',
+        { query: sql },
+        { headers: { Authorization: localStorage.getItem('rootPassword') } }
+      )
+      .then((response) => {
+        if (response.data.type == 'TABLE') {
+          setTableData(response.data.data);
+        }
+        getHistory();
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  }
 
   function reset() {
     setSql('');
@@ -144,12 +169,12 @@ export default function Home() {
             <ResetIcon />
             Reset
           </Button>
-          <Button variant='flat' color='success'>
+          <Button variant='flat' color='success' onPress={execute}>
             <PlayIcon />
             Run
           </Button>
         </div>
-        <TableComponent />
+        <TableComponent data={tableData} />
 
         <ModalComponent isOpen={isOpen} onOpenChange={onOpenChange} />
       </div>
