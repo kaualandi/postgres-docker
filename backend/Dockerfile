@@ -11,9 +11,6 @@ RUN npm install
 
 COPY . .
 
-<<<<<<< HEAD
-=======
-CMD ["npm", "run", "prisma:generate"]
+RUN npm run prisma:generate
 
->>>>>>> master
 CMD ["npm", "run", "start:dev"]

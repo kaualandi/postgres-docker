@@ -28,17 +28,19 @@ export default function History({ loading, data }: HistoryProps) {
       <Divider />
       <S.Body>
         {!loading ? (
-          data?.map((item) => (
-            <div key={item.id}>
-              <S.Item>
-                <h2>{item.query}</h2>
-                <p>Executado em {getFormattedDate(item.createdAt)}</p>
-              </S.Item>
-              <Divider />
-            </div>
-          ))
+          data
+            ?.map((item) => (
+              <div key={item.id}>
+                <S.Item>
+                  <h2>{item.query}</h2>
+                  <p>Executado em {getFormattedDate(item.createdAt)}</p>
+                </S.Item>
+                <Divider />
+              </div>
+            ))
+            .reverse()
         ) : (
-          <Spinner />
+          <Spinner style={{ marginTop: '50px' }} />
         )}
       </S.Body>
     </S.Container>

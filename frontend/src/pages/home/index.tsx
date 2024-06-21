@@ -17,11 +17,18 @@ import ModalComponent from '../../components/modal';
 import TableComponent from '../../components/table';
 import * as S from './styles';
 
+interface ConfigType {
+  tables: string[];
+  columns: string[];
+}
+
 export default function Home() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
+  const [textData, setTextData] = useState('');
   const [tableData, setTableData] = useState([]);
 
+  const [config, setConfig] = useState<ConfigType>({ tables: [], columns: [] });
   const [history, setHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -37,8 +44,25 @@ export default function Home() {
       });
   }
 
+  function getConfig() {
+    axios
+      .get('http://localhost:3001/querys/config')
+      .then((response) => {
+        const data: ConfigType = response.data;
+        data.tables = data.tables.map((table) => table + ' ');
+        data.columns = data.columns.map((column) => column + ' ');
+        data.columns = ['* ', ...data.columns];
+        setConfig(data);
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  }
+
   useEffect(() => {
     getHistory();
+    getConfig();
   }, []);
 
   const [sql, setSql] = useState('');
@@ -60,10 +84,12 @@ export default function Home() {
       'BACKUP ',
       'RESTORE ',
     ],
-    ['* '],
+    config.columns,
     ['FROM ', 'INTO ', 'TABLE ', 'DATABASE ', 'INDEX ', 'VIEW ', 'TRIGGER '],
+    config.tables,
     ['WHERE ', 'SET ', 'VALUES ', 'ADD ', 'MODIFY ', 'CHANGE ', 'RENAME '],
     [
+      ...config.columns,
       'AND ',
       'OR ',
       'NOT ',
@@ -91,6 +117,10 @@ export default function Home() {
       .then((response) => {
         if (response.data.type == 'TABLE') {
           setTableData(response.data.data);
+        }
+
+        if (response.data.type == 'TEXT') {
+          setTextData(response.data.data);
         }
         getHistory();
         console.log(response.data);
@@ -174,7 +204,13 @@ export default function Home() {
             Run
           </Button>
         </div>
-        <TableComponent data={tableData} />
+
+        {textData.length > 0 && (
+          <Chip variant='flat' color='success'>
+            {textData}
+          </Chip>
+        )}
+        {tableData.length > 0 && <TableComponent data={tableData} />}
 
         <ModalComponent isOpen={isOpen} onOpenChange={onOpenChange} />
       </div>

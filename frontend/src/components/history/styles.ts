@@ -9,6 +9,9 @@ export const Body = styled('div', {
   overflowY: 'auto',
   maxHeight: 'calc(100%)',
   padding: '0',
+  margin: '0',
+  display: 'flex',
+  flexDirection: 'column',
 });
 
 export const Item = styled('div', {
