@@ -6,16 +6,16 @@ import {
   ScrollShadow,
   Textarea,
   useDisclosure,
-} from '@nextui-org/react';
-import axios from 'axios';
-import { useEffect, useRef, useState } from 'react';
-import { BiKey } from 'react-icons/bi';
-import PlayIcon from '../../assets/icons/play';
-import ResetIcon from '../../assets/icons/reset';
-import History from '../../components/history';
-import ModalComponent from '../../components/modal';
-import TableComponent from '../../components/table';
-import * as S from './styles';
+} from "@nextui-org/react";
+import axios from "axios";
+import { useEffect, useRef, useState } from "react";
+import { BiKey } from "react-icons/bi";
+import PlayIcon from "../../assets/icons/play";
+import ResetIcon from "../../assets/icons/reset";
+import History from "../../components/history";
+import ModalComponent from "../../components/modal";
+import TableComponent from "../../components/table";
+import * as S from "./styles";
 
 interface ConfigType {
   tables: string[];
@@ -25,7 +25,7 @@ interface ConfigType {
 export default function Home() {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  const [textData, setTextData] = useState('');
+  const [textData, setTextData] = useState("");
   const [tableData, setTableData] = useState([]);
 
   const [config, setConfig] = useState<ConfigType>({ tables: [], columns: [] });
@@ -34,29 +34,29 @@ export default function Home() {
 
   function getHistory() {
     axios
-      .get('http://localhost:3001/history')
+      .get("http://localhost:3001/history")
       .then((response) => {
         setHistory(response.data);
         setIsLoading(false);
       })
       .catch((error) => {
-        console.error('Error:', error);
+        console.error("Error:", error);
       });
   }
 
   function getConfig() {
     axios
-      .get('http://localhost:3001/querys/config')
+      .get("http://localhost:3001/querys/config")
       .then((response) => {
         const data: ConfigType = response.data;
-        data.tables = data.tables.map((table) => table + ' ');
-        data.columns = data.columns.map((column) => column + ' ');
-        data.columns = ['* ', ...data.columns];
+        data.tables = data.tables.map((table) => table + " ");
+        data.columns = data.columns.map((column) => column + " ");
+        data.columns = ["* ", ...data.columns];
         setConfig(data);
         console.log(response.data);
       })
       .catch((error) => {
-        console.error('Error:', error);
+        console.error("Error:", error);
       });
   }
 
@@ -65,42 +65,42 @@ export default function Home() {
     getConfig();
   }, []);
 
-  const [sql, setSql] = useState('');
+  const [sql, setSql] = useState("");
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const autoCompleteSQL = [
     [
-      'SELECT ',
-      'INSERT ',
-      'CREATE ',
-      'ALTER ',
-      'DROP ',
-      'TRUNCATE ',
-      'DELETE ',
-      'UPDATE ',
-      'GRANT ',
-      'REVOKE ',
-      'BACKUP ',
-      'RESTORE ',
+      "SELECT ",
+      "INSERT ",
+      "CREATE ",
+      "ALTER ",
+      "DROP ",
+      "TRUNCATE ",
+      "DELETE ",
+      "UPDATE ",
+      "GRANT ",
+      "REVOKE ",
+      "BACKUP ",
+      "RESTORE ",
     ],
     config.columns,
-    ['FROM ', 'INTO ', 'TABLE ', 'DATABASE ', 'INDEX ', 'VIEW ', 'TRIGGER '],
+    ["FROM ", "INTO ", "TABLE ", "DATABASE ", "INDEX ", "VIEW ", "TRIGGER "],
     config.tables,
-    ['WHERE ', 'SET ', 'VALUES ', 'ADD ', 'MODIFY ', 'CHANGE ', 'RENAME '],
+    ["WHERE ", "SET ", "VALUES ", "ADD ", "MODIFY ", "CHANGE ", "RENAME "],
     [
       ...config.columns,
-      'AND ',
-      'OR ',
-      'NOT ',
-      'IN ',
-      'LIKE ',
-      'BETWEEN ',
-      'IS NULL ',
-      'IS NOT NULL ',
+      "AND ",
+      "OR ",
+      "NOT ",
+      "IN ",
+      "LIKE ",
+      "BETWEEN ",
+      "IS NULL ",
+      "IS NOT NULL ",
     ],
-    ['ORDER BY ', 'GROUP BY ', 'HAVING ', 'LIMIT ', 'OFFSET '],
-    ['ASC ', 'DESC '],
+    ["ORDER BY ", "GROUP BY ", "HAVING ", "LIMIT ", "OFFSET "],
+    ["ASC ", "DESC "],
   ];
 
   const [autoCompleteSQLFiltered, setAutoCompleteSQLFiltered] = useState<
@@ -110,34 +110,34 @@ export default function Home() {
   function execute() {
     axios
       .post(
-        'http://localhost:3001/querys/execute',
+        "http://localhost:3001/querys/execute",
         { query: sql },
-        { headers: { Authorization: localStorage.getItem('rootPassword') } }
+        { headers: { Authorization: localStorage.getItem("rootPassword") } }
       )
       .then((response) => {
-        if (response.data.type == 'TABLE') {
+        if (response.data.type == "TABLE") {
           setTableData(response.data.data);
         }
 
-        if (response.data.type == 'TEXT') {
+        if (response.data.type == "TEXT") {
           setTextData(response.data.data);
         }
         getHistory();
         console.log(response.data);
       })
       .catch((error) => {
-        console.error('Error:', error);
+        console.error("Error:", error);
       });
   }
 
   function reset() {
-    setSql('');
+    setSql("");
   }
 
   useEffect(() => {
-    const lastWord = sql.split(' ').pop();
+    const lastWord = sql.split(" ").pop();
 
-    const filtered = autoCompleteSQL[sql.split(' ').length - 1]?.filter(
+    const filtered = autoCompleteSQL[sql.split(" ").length - 1]?.filter(
       (item) => item.toLowerCase().startsWith(lastWord!.toLowerCase())
     );
 
@@ -145,38 +145,38 @@ export default function Home() {
   }, [sql]);
 
   function handleAutoComplete(item: string) {
-    const sqlArgs = sql.split(' ');
+    const sqlArgs = sql.split(" ");
     sqlArgs.pop();
 
     inputRef.current?.focus();
 
-    if (sql.split(' ').length <= 1) {
+    if (sql.split(" ").length <= 1) {
       setSql(`${item}`);
       return;
     }
 
-    setSql(`${sqlArgs.join(' ')} ${item}`);
+    setSql(`${sqlArgs.join(" ")} ${item}`);
   }
 
   return (
     <S.Container>
-      <div className='content'>
+      <div className="content">
         <Textarea
-          label='Query SQL'
-          labelPlacement='outside'
-          placeholder='Digite sua query aqui...'
+          label="Query SQL"
+          labelPlacement="outside"
+          placeholder="Digite sua query aqui..."
           minRows={5}
           ref={inputRef}
           value={sql}
           onValueChange={setSql}
         />
         <ScrollShadow
-          orientation='horizontal'
+          orientation="horizontal"
           style={{
-            display: 'flex',
-            flexWrap: 'nowrap',
-            maxWidth: '100%',
-            paddingBottom: '10px',
+            display: "flex",
+            flexWrap: "nowrap",
+            maxWidth: "100%",
+            paddingBottom: "10px",
           }}
         >
           {autoCompleteSQLFiltered?.map((item, index) => (
@@ -184,29 +184,29 @@ export default function Home() {
               as={Button}
               key={index}
               onPress={() => handleAutoComplete(item)}
-              className='chip'
+              className="chip"
             >
               {item}
             </Chip>
           ))}
         </ScrollShadow>
 
-        <div className='buttons'>
-          <Button variant='flat' color='primary' isIconOnly onPress={onOpen}>
+        <div className="buttons">
+          <Button variant="flat" color="primary" isIconOnly onPress={onOpen}>
             <BiKey size={22} />
           </Button>
-          <Button variant='flat' color='danger' onPress={reset}>
+          <Button variant="flat" color="danger" onPress={reset}>
             <ResetIcon />
             Reset
           </Button>
-          <Button variant='flat' color='success' onPress={execute}>
+          <Button variant="flat" color="success" onPress={execute}>
             <PlayIcon />
             Run
           </Button>
         </div>
 
         {textData.length > 0 && (
-          <Chip variant='flat' color='success'>
+          <Chip variant="flat" color="success">
             {textData}
           </Chip>
         )}

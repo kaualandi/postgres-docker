@@ -10,19 +10,16 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  prisma-generate:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile.prisma
+  prisma:
+    image: node:16-buster
     working_dir: /app
     volumes:
       - ./backend:/app
     environment:
       DATABASE_URL: postgres://postgres:admin@postgres:5432/postgres
+    command: ["sh", "-c", "npx prisma generate && npx prisma migrate deploy"]
     depends_on:
       - postgres
-    entrypoint: ["sh", "-c"]
-    command: ["npx prisma generate && exit 0"]
 
   backend:
     build:
@@ -31,7 +28,7 @@ services:
       DATABASE_URL: postgres://postgres:admin@postgres:5432/postgres
     depends_on:
       - postgres
-      - prisma-generate
+      - prisma
     volumes:
       - ./backend:/app
       - /app/node_modules
