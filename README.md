@@ -244,7 +244,7 @@ Distribuído sob a licença MIT. Veja [LICENSE](LICENSE) para mais informações
 ## Autores
 - **Kauã Landi** (06009262) - [@kaualandi](https://github.com/kaualandi)
 - **Lucas Anes** (06009881) - [@lucasanes](https://github.com/lucasanes)
-- **Murilo Mouteira** (06010561) - [@MuriloThundr](https://github.com/MuriloThundr)
+- **Murilo Mouteira** (06010561) - [@murilothunder](https://github.com/murilothunder)
 
 ## Contribuição
 
