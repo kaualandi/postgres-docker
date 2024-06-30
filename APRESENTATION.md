@@ -89,6 +89,106 @@ docker-compose up --build -d
 docker-compose down
 ```
 
+### Como o Docker foi configurado?
+
+Utilizamos 3 arquivos destinados ao Docker:
+
+#### Dockerfile para Vite (Frontend)
+
+```Dockerfile
+FROM node:18-slim
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+EXPOSE 5173
+
+CMD ["npm", "run", "dev"]
+```
+
+#### Dockerfile para NestJS (Backend)
+
+```Dockerfile
+FROM node:18-slim
+
+RUN apt-get update && apt-get install -y openssl procps
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+RUN npx prisma generate
+
+CMD ["npm", "run", "start:dev"]
+```
+
+
+#### Arquivo docker-compose.yml
+
+```yaml
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  prisma:
+    image: node:16-buster
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+    environment:
+      DATABASE_URL: postgres://postgres:admin@postgres:5432/postgres
+    command: ["sh", "-c", "npx prisma generate && npx prisma migrate deploy"]
+    depends_on:
+      - postgres
+
+  backend:
+    build:
+      context: ./backend
+    environment:
+      DATABASE_URL: postgres://postgres:admin@postgres:5432/postgres
+    depends_on:
+      - postgres
+      - prisma
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    ports:
+      - "3001:3000"
+    command: npm run start:dev
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm run dev
+
+volumes:
+  postgres_data:
+```
+
 ---
 
 ## 6. Migrações do Prisma
