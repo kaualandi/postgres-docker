@@ -118,9 +118,8 @@ export default function Home() {
         if (response.data.type == "TABLE") {
           setTableData(response.data.data);
         }
-
-        if (response.data.type == "TEXT") {
-          setTextData(response.data.data);
+        if (response.data.type == 'TEXT') {
+          setTextData(response.data.data.toString());
         }
         getHistory();
         console.log(response.data);
@@ -204,10 +203,11 @@ export default function Home() {
             Run
           </Button>
         </div>
-
-        {textData.length > 0 && (
-          <Chip variant="flat" color="success">
-            {textData}
+        {textData && (
+          <Chip variant='flat' color='success'>
+            {Number(textData) != 1
+              ? `${textData} linhas foram alteradas!`
+              : '1 linha foi alterada!'}
           </Chip>
         )}
         {tableData.length > 0 && <TableComponent data={tableData} />}
