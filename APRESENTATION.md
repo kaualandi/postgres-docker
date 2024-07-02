@@ -2,7 +2,7 @@
 
 ---
 
-#### **Apresentador 1: Kauã Landi**
+#### **Apresentador 1: Lucas Anes**
 
 ## 1. Introdução
 - **Objetivo do Projeto**: Criar um executor de queries SQL com:
@@ -60,7 +60,7 @@ cd ..
 
 ---
 
-#### **Apresentador 2: Lucas Anes**
+#### **Apresentador 2: Kauã Landi**
 
 ## 4. Configuração
 - **Criar o arquivo `.env`**:
@@ -311,7 +311,3 @@ npm run start
 - **Contribuições e Problemas**:
   - [Página de Problemas](https://github.com/kaualandi/postgres-docker/issues)
   - [Página de Contribuição](https://github.com/kaualandi/postgres-docker/pulls)
-
----
-
-Assim, cada apresentador cobre uma parte específica do projeto, garantindo uma apresentação clara e organizada.
