@@ -10,6 +10,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <NextUIProvider>
     <Home />
     <GlobalStyles />
-    <ToastContainer />
+    <ToastContainer theme="dark" />
   </NextUIProvider>
 );
