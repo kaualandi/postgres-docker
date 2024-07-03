@@ -2,11 +2,11 @@
 
 ---
 
-#### **Apresentador 1: Kauã Landi**
+#### **Apresentador 1: Lucas Anes**
 
 **Slide 1: Introdução**
 
-**Kauã:**
+**Lucas:**
 "Olá, bom dia a todos! Hoje, vamos apresentar nosso projeto, chamado Postgres-Docker. Este projeto foi desenvolvido como parte da Avaliação 2 da disciplina de Tecnologias da Informação e Comunicação no curso de Ciência da Computação na Unifeso. O objetivo do nosso projeto é criar um executor de queries SQL com funcionalidades de histórico de comandos, autocomplete básico e visualização de resultados em formato de tabela.
 
 Para isso, utilizamos diversas tecnologias:
@@ -22,7 +22,7 @@ Além disso, usamos o Docker Compose para orquestrar os contêineres, garantindo
 
 **Slide 2: Pré-requisitos**
 
-**Kauã:**
+**Lucas:**
 "Para configurar e executar nosso projeto, são necessárias algumas ferramentas:
 - Docker
 - Docker Compose
@@ -37,7 +37,7 @@ Testamos o projeto com as seguintes versões:
 
 **Slide 3: Instalação**
 
-**Kauã:**
+**Lucas:**
 "Agora, vou explicar como instalar o projeto. Primeiramente, você deve clonar o repositório do GitHub:
 
 ```sh
@@ -68,16 +68,14 @@ Finalmente, volte para o diretório raiz do projeto:
 cd ..
 ```
 
-Agora vou passar a palavra para o Lucas, que continuará a apresentação."
-
 ---
 
-#### **Apresentador 2: Lucas Anes**
+#### **Apresentador 2: Kauã Landi**
 
 **Slide 4: Configuração**
 
-**Lucas:**
-"Obrigado, Kauã. Agora vamos falar sobre a configuração do ambiente. Para isso, é necessário criar um arquivo `.env` dentro do backend do projeto. Você pode copiar o arquivo `.env.example` e renomeá-lo para `.env` com o seguinte comando:
+**Kauã:**
+"Agora vamos falar sobre a configuração do ambiente. Para isso, é necessário criar um arquivo `.env` dentro do backend do projeto. Você pode copiar o arquivo `.env.example` e renomeá-lo para `.env` com o seguinte comando:
 
 ```sh
 cp backend/.env.example backend/.env
@@ -87,7 +85,7 @@ cp backend/.env.example backend/.env
 
 **Slide 5: Uso do Docker Compose**
 
-**Lucas:**
+**Kauã:**
 "Para iniciar o ambiente de desenvolvimento, você deve usar o Docker Compose. Execute o comando:
 
 ```sh
@@ -110,7 +108,7 @@ docker-compose down
 
 **Slide 6: Migrações do Prisma**
 
-**Lucas:**
+**Kauã:**
 "Para criar as migrações do Prisma, execute o comando:
 
 ```sh
@@ -121,7 +119,7 @@ docker-compose exec backend npx prisma migrate dev
 
 **Slide 7: Estrutura do Projeto**
 
-**Lucas:**
+**Kauã:**
 "A estrutura do projeto está organizada da seguinte forma:
 
 ```
@@ -172,8 +170,6 @@ postgres-docker/
 └── package.json
 ```
 
-Agora vou passar a palavra para o Murilo, que continuará com os scripts disponíveis, endpoints e outras informações."
-
 ---
 
 #### **Apresentador 3: Murilo Mouteira**
@@ -181,7 +177,7 @@ Agora vou passar a palavra para o Murilo, que continuará com os scripts dispon�
 **Slide 8: Scripts Disponíveis**
 
 **Murilo:**
-"Obrigado, Lucas. No nosso projeto, criamos alguns scripts para facilitar o desenvolvimento. Eles estão disponíveis no arquivo `package.json` na raiz do projeto. Os principais scripts são:
+"No nosso projeto, criamos alguns scripts para facilitar o desenvolvimento. Eles estão disponíveis no arquivo `package.json` na raiz do projeto. Os principais scripts são:
 - `start`: Inicia o ambiente de desenvolvimento com o Docker Compose em segundo plano
 - `dev`: Inicia o ambiente de desenvolvimento com o Docker Compose em primeiro plano
 - `clear-cache`: Limpa o cache do Docker Compose
