@@ -1,5 +1,6 @@
 import {
   Button,
+  Chip,
   getKeyValue,
   TableBody,
   TableCell,
@@ -61,44 +62,51 @@ export default function TableComponent({
           </Button>
         )}
       </div>
-      <S.Tabela
-        aria-label={'Table'}
-        selectionMode='multiple'
-        selectedKeys={selectedKeys}
-        onSelectionChange={setSelectedKeys}
-      >
-        <TableHeader columns={columns}>
-          {(column) =>
-            column.key != 'actions' ? (
-              <TableColumn key={column.key}>{column.label}</TableColumn>
-            ) : (
-              <TableColumn key={column.key}>{column.label}</TableColumn>
-            )
-          }
-        </TableHeader>
-        <TableBody items={rows}>
-          {(item) => (
-            <TableRow key={item.id}>
-              {(columnKey) =>
-                columnKey != 'actions' ? (
-                  <TableCell>{getKeyValue(item, columnKey)}</TableCell>
-                ) : (
-                  <TableCell>
-                    <Button
-                      size='sm'
-                      color='danger'
-                      variant='flat'
-                      onPress={() => remove(item.id)}
-                    >
-                      <BiTrash size={18} color='#f54180' />
-                    </Button>
-                  </TableCell>
-                )
-              }
-            </TableRow>
-          )}
-        </TableBody>
-      </S.Tabela>
+      {data.length == 0 && (
+        <Chip style={{ marginLeft: '10px' }} size='sm'>
+          Nenhum resultado encontrado.
+        </Chip>
+      )}
+      {data.length > 0 && (
+        <S.Tabela
+          aria-label={'Table'}
+          selectionMode='multiple'
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
+        >
+          <TableHeader columns={columns}>
+            {(column) =>
+              column.key != 'actions' ? (
+                <TableColumn key={column.key}>{column.label}</TableColumn>
+              ) : (
+                <TableColumn key={column.key}>{column.label}</TableColumn>
+              )
+            }
+          </TableHeader>
+          <TableBody items={rows}>
+            {(item) => (
+              <TableRow key={item.id}>
+                {(columnKey) =>
+                  columnKey != 'actions' ? (
+                    <TableCell>{getKeyValue(item, columnKey)}</TableCell>
+                  ) : (
+                    <TableCell>
+                      <Button
+                        size='sm'
+                        color='danger'
+                        variant='flat'
+                        onPress={() => remove(item.id)}
+                      >
+                        <BiTrash size={18} color='#f54180' />
+                      </Button>
+                    </TableCell>
+                  )
+                }
+              </TableRow>
+            )}
+          </TableBody>
+        </S.Tabela>
+      )}
     </S.Container>
   );
 }
