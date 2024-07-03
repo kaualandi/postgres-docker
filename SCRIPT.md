@@ -254,4 +254,4 @@ Obrigado pela atenção e estamos abertos para perguntas!"
 
 ---
 
-Este script detalhado guia os apresentadores através da apresentação, assegurando que cada um cobre sua parte designada de forma clara e completa.
+Este script detalhado guia os apresentadores através da apresentação, assegurando que cada um cobre sua parte designada de forma clara e completa
