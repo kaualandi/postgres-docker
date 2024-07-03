@@ -14,8 +14,12 @@ import * as S from "./styles";
 
 export default function TableComponent({
   data,
+  execute,
+  query,
 }: {
   data: { id: string; query: string }[];
+  execute: (sql: string) => void;
+  query: string;
 }) {
   const [columns, setColumns] = useState<{ key: string; label: string }[]>([]);
 
@@ -30,7 +34,7 @@ export default function TableComponent({
           key,
           label: key.toUpperCase(),
         })),
-        // { key: "actions", label: "ACTIONS" },
+        { key: "actions", label: "ACTIONS" },
       ]);
       setRows(data);
     }
@@ -39,11 +43,14 @@ export default function TableComponent({
 
   function remove(id: string) {
     setRows((rest) => rest.filter((row) => row.id !== id));
+    const table = query.split("FROM")[1].trim();
+    execute(`DELETE FROM ${table} WHERE id = ${id}`);
   }
 
   function removeAll() {
     if (selectedKeys.size == undefined) return setRows([]);
     selectedKeys.forEach((key) => remove(key));
+    setSelectedKeys(new Set([]));
   }
 
   return (

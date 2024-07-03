@@ -104,11 +104,44 @@ export default function Home() {
     ["ASC ", "DESC "],
   ];
 
+  const autoCompleteSQL1 = [
+    [
+      "SELECT ",
+      "INSERT ",
+      "CREATE ",
+      "ALTER ",
+      "DROP ",
+      "TRUNCATE ",
+      "DELETE ",
+      "UPDATE ",
+      "GRANT ",
+      "REVOKE ",
+      "BACKUP ",
+      "RESTORE ",
+    ],
+    ["FROM ", "INTO ", "TABLE ", "DATABASE ", "INDEX ", "VIEW ", "TRIGGER "],
+    config.tables,
+    ["WHERE ", "SET ", "VALUES ", "ADD ", "MODIFY ", "CHANGE ", "RENAME "],
+    [
+      ...config.columns,
+      "AND ",
+      "OR ",
+      "NOT ",
+      "IN ",
+      "LIKE ",
+      "BETWEEN ",
+      "IS NULL ",
+      "IS NOT NULL ",
+    ],
+    ["ORDER BY ", "GROUP BY ", "HAVING ", "LIMIT ", "OFFSET "],
+    ["ASC ", "DESC "],
+  ];
+
   const [autoCompleteSQLFiltered, setAutoCompleteSQLFiltered] = useState<
     string[]
   >([]);
 
-  function execute() {
+  function execute(sql: string) {
     setTableData([]);
     setTextData("");
     axios
@@ -139,9 +172,17 @@ export default function Home() {
   useEffect(() => {
     const lastWord = sql.split(" ").pop();
 
-    const filtered = autoCompleteSQL[sql.split(" ").length - 1]?.filter(
-      (item) => item.toLowerCase().startsWith(lastWord!.toLowerCase())
-    );
+    let filtered;
+
+    if (sql.split(" ")[0] == "DELETE") {
+      filtered = autoCompleteSQL1[sql.split(" ").length - 1]?.filter((item) =>
+        item.toLowerCase().startsWith(lastWord!.toLowerCase())
+      );
+    } else {
+      filtered = autoCompleteSQL[sql.split(" ").length - 1]?.filter((item) =>
+        item.toLowerCase().startsWith(lastWord!.toLowerCase())
+      );
+    }
 
     setAutoCompleteSQLFiltered(filtered);
   }, [sql]);
@@ -201,7 +242,7 @@ export default function Home() {
             <ResetIcon />
             Reset
           </Button>
-          <Button variant="flat" color="success" onPress={execute}>
+          <Button variant="flat" color="success" onPress={() => execute(sql)}>
             <PlayIcon />
             Run
           </Button>
@@ -213,7 +254,7 @@ export default function Home() {
               : "1 linha foi afetada!"}
           </Chip>
         )}
-        <TableComponent data={tableData} />
+        <TableComponent data={tableData} execute={execute} query={sql} />
 
         <ModalComponent isOpen={isOpen} onOpenChange={onOpenChange} />
       </div>
